@@ -165,6 +165,8 @@ namespace Console.Tools.DotNet
 
 		public void GenerateSolution(ProjectMetadata project)
 		{
+			_addedProjects.Clear();
+
 			var solutionFileName = $"{Path.GetFileNameWithoutExtension(project.FullPath)}.CI.sln";
 			var solutionFilePath = Path.Combine(Path.GetDirectoryName(project.FullPath), solutionFileName);
 
