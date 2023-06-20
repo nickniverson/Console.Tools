@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Xml.Linq;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -218,9 +219,9 @@ namespace Console.Tools.DotNet
 
 		private void Dotnet(string arguments)
 		{
-			var process = new System.Diagnostics.Process
+			var process = new Process
 			{
-				StartInfo = new System.Diagnostics.ProcessStartInfo
+				StartInfo = new ProcessStartInfo
 				{
 					FileName = "dotnet",
 					Arguments = arguments,
