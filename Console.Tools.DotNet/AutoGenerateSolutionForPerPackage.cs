@@ -267,7 +267,8 @@ namespace Console.Tools.DotNet
 				.ToList()
 				.ForEach(project =>
 				{
-					AnsiConsole.WriteLine($"creating solution for project type:  '{project.Type}' with path '{project.FullPath}'");
+					AnsiConsole.MarkupLine($"[green]creating solution for project type:[/]  '{project.Type}' [green]with path[/] '{project.FullPath}'");
+					AnsiConsole.WriteLine();
 
 					_solutionCreator.GenerateSolution(project);
 				});
