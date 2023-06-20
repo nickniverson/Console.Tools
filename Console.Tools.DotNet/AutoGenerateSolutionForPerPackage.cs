@@ -84,6 +84,7 @@ namespace Console.Tools.DotNet
 
 	public interface IProjectReader
 	{
+		ProjectMetadata ReadProject(string path);
 		IEnumerable<ProjectMetadata> ReadProjects(string path);
 	}
 
@@ -98,6 +99,30 @@ namespace Console.Tools.DotNet
 			_projectTypeSpecifications = projectTypeSpecifications ?? throw new ArgumentNullException(nameof(projectTypeSpecifications));
 		}
 
+		public ProjectMetadata ReadProject(string path)
+		{
+			var doc = XDocument.Load(path);
+			var projectMetadata = new ProjectMetadata(path);
+
+			projectMetadata.Sdk = doc.Descendants("Project").FirstOrDefault()?.Attribute("Sdk")?.Value;
+			projectMetadata.OutputType = doc.Descendants("OutputType").FirstOrDefault()?.Value;
+			projectMetadata.AzureFunctionsVersion = doc.Descendants("AzureFunctionsVersion").FirstOrDefault()?.Value;
+			projectMetadata.ProjectReferences.AddRange(
+				doc
+				.Descendants("ProjectReference")
+				.Select(projectReference =>
+					Path.GetFullPath(
+						Path.Combine(
+							Path.GetDirectoryName(path),
+							projectReference.Attribute("Include").Value)
+					))
+				.ToList());
+
+			SetProjectType(projectMetadata);
+
+			return projectMetadata;
+		}
+
 		public IEnumerable<ProjectMetadata> ReadProjects(string path)
 		{
 			if (string.IsNullOrWhiteSpace(path))
@@ -109,24 +134,7 @@ namespace Console.Tools.DotNet
 
 			foreach (var projectPath in projectPaths)
 			{
-				var doc = XDocument.Load(projectPath);
-				var projectMetadata = new ProjectMetadata(projectPath);
-
-				projectMetadata.Sdk = doc.Descendants("Project").FirstOrDefault()?.Attribute("Sdk")?.Value;
-				projectMetadata.OutputType = doc.Descendants("OutputType").FirstOrDefault()?.Value;
-				projectMetadata.AzureFunctionsVersion = doc.Descendants("AzureFunctionsVersion").FirstOrDefault()?.Value;
-				projectMetadata.ProjectReferences.AddRange(
-					doc
-					.Descendants("ProjectReference")
-					.Select(projectReference =>
-						Path.GetFullPath(
-							Path.Combine(
-								Path.GetDirectoryName(projectPath),
-								projectReference.Attribute("Include").Value)
-						))
-					.ToList());
-
-				SetProjectType(projectMetadata);
+				var projectMetadata = ReadProject(projectPath);
 
 				yield return projectMetadata;
 			}
@@ -199,9 +207,7 @@ namespace Console.Tools.DotNet
 			// Add the referenced projects to the solution
 			foreach (var referencePath in project.ProjectReferences)
 			{
-				var referenceProject = _projectReader
-					.ReadProjects(Path.GetDirectoryName(referencePath))
-					.FirstOrDefault();
+				var referenceProject = _projectReader.ReadProject(referencePath);
 
 				if (referenceProject != null)
 				{
