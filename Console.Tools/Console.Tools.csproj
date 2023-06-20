@@ -17,6 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\Console.Tools.DotNet\Console.Tools.DotNet.csproj" />
 	  <ProjectReference Include="..\Console.Tools.Octopus\Console.Tools.Octopus.csproj" />
 	</ItemGroup>
 

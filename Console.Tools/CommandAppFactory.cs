@@ -7,6 +7,7 @@ using Console.Tools;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using Autofac.Core;
+using Console.Tools.DotNet;
 
 /// <summary>
 /// Encapsulates Spectre.Console and Autofac DI Container bootstrapping
@@ -28,6 +29,11 @@ internal static class CommandAppFactory
 
 		builder
 			.RegisterAssemblyTypes(typeof(OctopusCommandExtensions).Assembly)
+			.AsImplementedInterfaces()
+			.OnRegistered(LogToConsole);
+
+		builder
+			.RegisterAssemblyTypes(typeof(SolutionCommandExtensions).Assembly)
 			.AsImplementedInterfaces()
 			.OnRegistered(LogToConsole);
 
@@ -66,8 +72,12 @@ internal static class CommandAppFactory
 				.SetInterceptor(CreateDisplayCommandSettingsInterceptor())
 				.SetExceptionHandler(exception => AnsiConsole.WriteException(exception, ExceptionFormats.Default))
 
+				//extension method to configure solution commands... 
+				.ConfigureSolutionCommands()
+
 				//extension method to configure octopus commands... 
 				.ConfigureOctopusCommands();
+
 		});
 
 		return app;

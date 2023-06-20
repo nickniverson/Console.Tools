@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Console.Tools", "Console.To
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Console.Tools.Octopus", "Console.Tools.Octopus\Console.Tools.Octopus.csproj", "{A7CA4E85-F5DB-41EF-A0F2-A12C7BDF4193}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console.Tools.DotNet", "Console.Tools.DotNet\Console.Tools.DotNet.csproj", "{98948C0C-FF37-430B-9C3C-D7B8D0F461FC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A7CA4E85-F5DB-41EF-A0F2-A12C7BDF4193}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7CA4E85-F5DB-41EF-A0F2-A12C7BDF4193}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7CA4E85-F5DB-41EF-A0F2-A12C7BDF4193}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98948C0C-FF37-430B-9C3C-D7B8D0F461FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98948C0C-FF37-430B-9C3C-D7B8D0F461FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98948C0C-FF37-430B-9C3C-D7B8D0F461FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98948C0C-FF37-430B-9C3C-D7B8D0F461FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
