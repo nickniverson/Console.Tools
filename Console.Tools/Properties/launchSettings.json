@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Console.Tools": {
+      "commandName": "Project",
+      "commandLineArgs": " solution auto-generate-per-package --path \"C:\\code\\TestConsoleToolsSolutionCreator\""
+    }
+  }
+}

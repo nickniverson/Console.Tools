@@ -53,8 +53,7 @@ namespace Console.Tools.DotNet
 
 		public bool IsMatch(ProjectMetadata projectMetadata)
 		{
-			return projectMetadata.OutputType == "Exe"
-				&& projectMetadata.Sdk == "Microsoft.NET.Sdk.Web";
+			return projectMetadata.Sdk == "Microsoft.NET.Sdk.Web";
 		}
 	}
 
@@ -92,9 +91,9 @@ namespace Console.Tools.DotNet
 
 	public class ProjectReader : IProjectReader
 	{
-		private readonly List<IProjectTypeSpecification> _projectTypeSpecifications = new List<IProjectTypeSpecification>();
+		private readonly IList<IProjectTypeSpecification> _projectTypeSpecifications;
 
-		public ProjectReader(List<IProjectTypeSpecification> projectTypeSpecifications)
+		public ProjectReader(IList<IProjectTypeSpecification> projectTypeSpecifications)
 		{
 			_projectTypeSpecifications = projectTypeSpecifications ?? throw new ArgumentNullException(nameof(projectTypeSpecifications));
 		}
@@ -141,7 +140,7 @@ namespace Console.Tools.DotNet
 				{
 					projectMetadata.Type = projectType.Type;
 
-					break;
+					return;
 				}
 			}
 
@@ -176,7 +175,7 @@ namespace Console.Tools.DotNet
 			}
 
 			// Create a new solution file
-			Dotnet($"new sln -n {solutionFileName} -o {Path.GetDirectoryName(project.FullPath)}");
+			Dotnet($"new sln -n {Path.GetFileNameWithoutExtension(solutionFileName)} -o {Path.GetDirectoryName(project.FullPath)}");
 
 			// Add the projects to the solution recursively
 			AddProjectToSolution(solutionFilePath, project);
@@ -228,11 +227,13 @@ namespace Console.Tools.DotNet
 		}
 	}
 
+
 	public class AutoGeneratePerPackageSettings : CommandSettings
 	{
 		[CommandOption("-p|--path <path>")]
 		public string? Path { get; set; }
 	}
+
 
 	public partial class AutoGeneratePerPackageCommand : Command<AutoGeneratePerPackageSettings>
 	{
@@ -249,15 +250,6 @@ namespace Console.Tools.DotNet
 
 		public override int Execute([NotNull] CommandContext context, [NotNull] AutoGeneratePerPackageSettings settings)
 		{
-			// TODO:  register with container... 
-			// Define project types
-			//List<IProjectTypeSpecification> projectTypes = new List<IProjectTypeSpecification>
-			//{
-			//	new WebApiProjectSpecification(),
-			//	new ConsoleAppProjectSpecification(),
-			//	new AzureFunctionAppProjectSpecification(),
-			//};
-
 			List<ProjectMetadata> projects = _projectReader
 				.ReadProjects(settings.Path)
 				.ToList();
@@ -265,7 +257,8 @@ namespace Console.Tools.DotNet
 			projects
 				.Where(project => project.Type != ProjectType.Unknown)
 				.ToList()
-				.ForEach(project => {
+				.ForEach(project =>
+				{
 					AnsiConsole.WriteLine($"creating solution for project type:  '{project.Type}' with path '{project.FullPath}'");
 
 					_solutionCreator.GenerateSolution(project);
@@ -274,6 +267,7 @@ namespace Console.Tools.DotNet
 			return 0;
 		}
 	}
+
 
 	public static class SolutionCommandExtensions
 	{
@@ -287,5 +281,4 @@ namespace Console.Tools.DotNet
 			return config;
 		}
 	}
-
 }
