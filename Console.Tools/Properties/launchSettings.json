@@ -1,8 +1,12 @@
 {
   "profiles": {
-    "Console.Tools": {
+    "generate solution file per package": {
       "commandName": "Project",
       "commandLineArgs": " solution auto-generate-per-package --path \"C:\\code\\TestConsoleToolsSolutionCreator\""
+    },
+    "generate test classes": {
+      "commandName": "Project",
+      "commandLineArgs": "dotnet generate test-classes"
     }
   }
 }
